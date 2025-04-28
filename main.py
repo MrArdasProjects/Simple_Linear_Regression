@@ -1,0 +1,47 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+def linear_regression_coefficients(x, y):
+    x_mean = np.mean(x)
+    y_mean = np.mean(y)
+    numerator = np.sum((x - x_mean) * (y - y_mean))
+    denominator = np.sum((x - x_mean) ** 2)
+    b1 = numerator / denominator
+    b0 = y_mean - b1 * x_mean
+    return b0, b1
+
+df = pd.read_csv("Football_players.csv", encoding="ISO-8859-1")
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', 1000)
+
+print(df)
+
+age = df["Age"].to_numpy()
+height = df["Height"].to_numpy()
+salary = df["Salary"].to_numpy()
+
+b0_age_salary, b1_age_salary = linear_regression_coefficients(age, salary)
+b0_height_salary, b1_height_salary = linear_regression_coefficients(height, salary)
+
+fig, axs = plt.subplots(1, 2, figsize=(16, 5))
+
+axs[0].scatter(age, salary, color="blue", label="Actual Data")
+axs[0].plot(age, b1_age_salary * age + b0_age_salary, color="red", label="Regression Line")
+axs[0].set_xlabel("Age")
+axs[0].set_ylabel("Salary")
+axs[0].set_title("Simple Linear Regression: Age -> Salary")
+axs[0].legend()
+
+axs[1].scatter(height, salary, color="green", label="Actual Data")
+axs[1].plot(height, b1_height_salary * height + b0_height_salary, color="red", label="Regression Line")
+axs[1].set_xlabel("Height")
+axs[1].set_ylabel("Salary")
+axs[1].set_title("Simple Linear Regression: Height -> Salary")
+axs[1].legend()
+
+plt.show()
+
+print("Model 1 (Age -> Salary) Coefficients: b0 =", b0_age_salary, "b1 =", b1_age_salary)
+print("Model 2 (Height -> Salary) Coefficients: b0 =", b0_height_salary, "b1 =", b1_height_salary)
